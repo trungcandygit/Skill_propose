@@ -1,0 +1,47 @@
+{
+  "skill_name": "research-proposal-master",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Mình vừa nhận R&R từ Journal of Asian Economics cho bài 'ESG disclosure and cost of debt in ASEAN banks'. Dưới đây là comment của editor và 2 reviewer, dán nguyên văn:\n\nEditor: Both referees see merit but ask for substantial work on identification. Please pay particular attention to Reviewer 2's point on the regulation dates.\n\nReviewer 1: (1) The authors claim that ESG disclosure reduces the cost of debt, but the design is a firm fixed-effects regression with controls; please temper the causal language. (2) Standard errors should be clustered at the bank level; currently they appear to be robust only. (3) Table 4 reports N = 2,140 but Table 1 says 2,104. Please reconcile. (4) The abstract mentions a 35 basis point reduction; I cannot find this number in any table.\nReviewer 2: (1) Indonesia's OJK sustainability reporting regulation (POJK 51/2017) applied to banks from 2019, yet the 'mandatory' dummy seems to switch on in 2017. (2) Please add a staggered DiD using the different adoption years across countries instead of TWFE. (3) The literature review ignores recent work on greenwashing in banking.\n\nManuscript: ~/Research/ESG_CoD/paper_v3.docx, R code in ~/Research/ESG_CoD/code/, outputs (CSV) in ~/Research/ESG_CoD/output/. Giúp mình lên kế hoạch sửa và bắt đầu từ comment quan trọng nhất.",
+      "expected_output": "Loads SKILL.md, core.md and the orchestrator card (then Seat 1 / Seat 2 cards before the relevant work). Replies in Vietnamese. Parses E1, R1.1-R1.4, R2.1-R2.3 verbatim with type, category and severity in a table and waits for confirmation. Flags R2.1 as a potential MAJOR/CRITICAL coding issue (C-65 to C-68): asks for or checks the POJK effective date against a primary source, proposes a year-by-unit coding check and a timing-consistent recoding robustness. Lists the empirical work first (bank-level clustering, staggered DiD with Callaway-Sant'Anna or Sun-Abraham, recoding) and halts until results exist. Treats R1.1 as an association-wording fix (C-20). Plans to run check_numbers.py on the docx vs the output CSVs for R1.3/R1.4 and check_crossrefs.py. Does not invent any number, citation or regulation date; uses AUTHOR_INPUT_NEEDED or [CITATION NEEDED] where needed. Works on a copy of the manuscript.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Bản sửa R1 của bài ở ~/Research/ESG_CoD/paper_v3_R1.docx đã xong, hình ở ~/Research/ESG_CoD/figures/ (fig1_event_study.pdf, fig2_coefplot.png), bảng xuất từ R ở ~/Research/ESG_CoD/output/*.csv. Chạy hội đồng kiểm tra (panel audit) phần bảng và hình trước khi mình gửi lại tạp chí: note bảng có đủ chưa, số trong bài có khớp CSV không, hình có đạt chuẩn in không. Nhớ là note bảng/hình chỉ 1-2 câu thôi.",
+      "expected_output": "Runs check_figure.py (print width, effective font size, dpi, PDF font embedding), check_numbers.py against the CSV folder, check_crossrefs.py and check_docx_style.py (note-length check) and reports their findings with counts. Spawns at most 2 agents, with the LOAD.md block and PANEL_PROMPTS.md templates; Seat 2 loads seat2 + tables-figures cards and reports a 'Loaded:' line with sentinels and 'rules checked: n/total'. Findings cite rule IDs (TF-15/16 note length and contents, TF-37 font size, TF-48/50 vector and embedded fonts, TF-05/06 SE and stars, S2-02 number matches) with severity CRITICAL/MAJOR/MINOR/SUGGESTION and evidence (file, cell, page). Every number is recomputed, every page rendered, no sampling; anything not checkable is UNVERIFIED. Agents are read-only; nothing is written into the project folder except to a copy or scratch folder. Loops until no CRITICAL/MAJOR remain (max 5 rounds) and logs any card miss in VALIDATION.md.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Write the response letter for our revision of 'Board gender diversity and stock price crash risk: evidence from Vietnam' (Pacific-Basin Finance Journal, MS PBFJ-D-26-00412). The revised manuscript is ~/Research/Crash/paper_R1.docx and the tracker with what we changed is ~/Research/Crash/tracker.xlsx. Reviewer 2 asked us to use an instrument (female directors' network) which we did not do because the data do not exist; Reviewer 1 thought our NCSKEW measure was wrong, but actually he misread Section 3.2. Please make the tone polite but firm.",
+      "expected_output": "Loads core and the Seat 1 card. Writes the letter only against the revised manuscript: cover note with 2-3 sentence summary and the convention line, then Editor / Referee 1 / Referee 2 sections, each comment quoted in full, the first sentence stating agree/disagree, what changed and where (page/section/table that resolves in the revised file), evidence with numbers read from the files. For the IV request: respectfully declined with a scope/data justification, a softened claim and a stated limitation, not 'lack of time/funding' (S1-16). For the NCSKEW misreading: does not write 'the reviewer misunderstood'; clarifies and improves the manuscript's wording with a cross-reference (S1-14). Avoids forbidden phrases, thanks-only replies, em dashes and promises of future work; uses AUTHOR_INPUT_NEEDED for anything the tracker does not support. Runs check_docx_style.py --skip-italic on the letter and offers the two-agent panel before sending.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Thầy hướng dẫn và reviewer của tạp chí Tạp chí Kinh tế & Phát triển yêu cầu bài 'Năng lực vốn và rủi ro tín dụng của các ngân hàng thương mại Việt Nam 2010-2024' (panel 27 ngân hàng) phải chạy thêm GMM hệ thống vì có biến trễ của NPL ở vế phải, và kiểm tra lại việc mã hoá biến Basel II (dummy = 1 từ năm ngân hàng được NHNN công nhận đạt Thông tư 41/2016). File bài: ~/Thesis/Bank/bai_bao_v2.docx, dữ liệu và code R: ~/Thesis/Bank/data/, ~/Thesis/Bank/code/. Làm giúp mình.",
+      "expected_output": "Treats this as a new paper (no BAI_VALUATION assumptions). Loads core, orchestrator and Seat 2 cards. Plans system GMM per S2-37/S2-38: declares endogenous/predetermined variables, collapsed instruments with instrument count <= 27 groups (and flags that 27 banks is a small N for GMM), reports AR(1)/AR(2), Hansen J within ~0.10-0.90, difference-in-Hansen, Windmeijer SEs, and the FE-OLS bound check (S2-39); notes few-cluster inference (S2-30). Audits the Basel II dummy bank by bank and year by year against the SBV recognition dates from a primary source (C-65 to C-68, S2-84/85), using AUTHOR_INPUT_NEEDED where the dates are not verified, and proposes a timing-consistent recoding robustness. Halts for results before editing text; runs code on a copy; never invents coefficients. Replies in Vietnamese.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Tôi muốn viết đề cương nghiên cứu sinh ngành tài chính về tác động của việc nâng hạng thị trường FTSE lên thanh khoản cổ phiếu Việt Nam. Trường yêu cầu mẫu đề cương 15–20 trang. Hãy giúp tôi bắt đầu.",
+      "expected_output": "Không viết bản nháp ngay: chạy intake (P-01) hoặc phỏng vấn spec (P-92) và đề xuất outline chờ duyệt (P-90) Liệt kê các dữ kiện pháp lý/thời điểm FTSE cần xác minh ở nguồn gốc (DS-10, P-04) và danh sách tài liệu cần người dùng tìm (P-06) Không bịa trích dẫn hay số liệu; dữ kiện chưa kiểm ghi [CẦN XÁC MINH]",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Đây là đề cương của tôi (file đính kèm) và góp ý của hội đồng: 'phương pháp chưa rõ nhóm đối chứng; mục tiêu quá rộng; thiếu kế hoạch dữ liệu'. Sửa giúp tôi.",
+      "expected_output": "Phân loại góp ý MUST/SHOULD/CONSIDER/DISAGREE và chờ người dùng xác nhận (P-81) Không viết lại các mục không bị góp ý; lập ma trận nhất quán câu hỏi–giả thuyết–phương pháp–dữ liệu (P-71) Kế hoạch dữ liệu ghi nhà cung cấp, biến, phạm vi năm, trạng thái truy cập và phương án dự phòng (P-36, DS-30)",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Kiểm tra đề cương này trước khi nộp hồ sơ NCS: đối chiếu các thông tư và quyết định được trích, kiểm tra APA và tính khả thi.",
+      "expected_output": "Mỗi văn bản pháp lý được đối chiếu tới điều, khoản, điểm, kèm trích nguyên văn và trạng thái KHỚP/LỆCH/CHƯA CÓ NGUỒN (DS-01, DS-10) Kiểm APA: '&' trong ngoặc, 'và' ngoài ngoặc, khớp hai chiều trích dẫn–danh mục (P-63) Panel 2 seat với PROPOSAL MODE, báo cáo có dòng Loaded và rules checked (C-37)",
+      "files": []
+    }
+  ]
+}
